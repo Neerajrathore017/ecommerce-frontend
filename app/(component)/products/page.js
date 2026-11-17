@@ -2,8 +2,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import productService from "../../services/productService";
+import productService from "../../(services)/productService";
 import Card from "../products/card";
+import cartService from "@/app/(services)/cart";
+import { useRouter } from "next/navigation";
 
 const emptyForm = {
   name: "",
@@ -21,7 +23,7 @@ export default function ProductsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
+  const router = useRouter();
   useEffect(() => {
     loadProducts();
   }, []);
@@ -118,43 +120,14 @@ export default function ProductsPage() {
     }
   }
 
-  function handleEdit(product) {
-    setEditingId(product.id);
+  function handleAddCart(product) {
+     const response =  cartService.addToCart(product.id,1);
+     console.log("Response of add to m cart : ",response)
 
-    setForm({
-      name: product.name ?? product.productName ?? "",
-      description: product.description ?? "",
-      price: String(product.price ?? ""),
-      stock: String(product.stock ?? product.quantity ?? ""),
-    });
-
-    setError("");
-    setMessage("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  async function handleDelete(product) {
-    const confirmed = window.confirm(
-      `Delete "${product.name ?? product.productName ?? "this product"}"?`
-    );
-
-    if (!confirmed) return;
-
-    setError("");
-    setMessage("");
-
-    try {
-      await productService.delete(product.id);
-
-      if (editingId === product.id) {
-        resetForm();
-      }
-
-      setMessage("Product deleted successfully.");
-      await loadProducts();
-    } catch (err) {
-      setError(err.message || "Unable to delete product.");
-    }
+  async function handleQuantity(product) {
+   
   }
 
   const filteredProducts = products.filter((product) => {
@@ -165,6 +138,9 @@ export default function ProductsPage() {
       .toLowerCase()
       .includes(search.toLowerCase());
   });
+  const gotocart=()=>{
+    router.push("/cart")
+  }
 
   return (
     <main style={styles.page}>
@@ -184,6 +160,8 @@ export default function ProductsPage() {
         >
           Refresh
         </button>
+        <button  type="button"
+          style={styles.secondaryButton} onClick={gotocart}>GO TO CART</button>
       </header>
 
       {error && (
@@ -313,8 +291,8 @@ export default function ProductsPage() {
       <Card
         key={product.id}
         product={product}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        addCart={handleAddCart}
+        quantity={handleQuantity}
       />
     ))}
   </div>

@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import { AppContextProvider } from "./(services)/contextStore";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import MuiThemeProvider from "../app/ThemeProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -19,7 +21,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+      {/* <ErrorBoundary fallback={<p>something went wroung</p>}> */}
+
+      <AppContextProvider>
+       <MuiThemeProvider>
+          {children}
+        </MuiThemeProvider>
+        
+        
+      </AppContextProvider>
+      {/* </ErrorBoundary> */}
+        </body>
     </html>
   );
 }

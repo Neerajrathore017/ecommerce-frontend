@@ -1,6 +1,7 @@
 "use client";
 
-export default function Card({ product, onEdit, onDelete }) {
+export default function Card({ product, addCart, quantity }) {
+  console.log("Current card product : ",product)
   return (
     <div style={styles.card}>
       <div style={styles.header}>
@@ -13,6 +14,7 @@ export default function Card({ product, onEdit, onDelete }) {
       <p style={styles.description}>
         {product.description ?? "No description available"}
       </p>
+      <img src={product.imageUrl}/>
 
       <div style={styles.details}>
         <div>
@@ -31,12 +33,12 @@ export default function Card({ product, onEdit, onDelete }) {
       </div>
 
       <div style={styles.actions}>
-        <button onClick={() => onEdit(product)} style={styles.editButton}>
-          Edit
+        <button onClick={() => addCart(product)} style={styles.editButton}>
+          Add To Cart
         </button>
 
-        <button onClick={() => onDelete(product)} style={styles.deleteButton}>
-          Delete
+        <button onClick={() => quantity(product)} style={styles.deleteButton}>
+          Quantity
         </button>
       </div>
     </div>

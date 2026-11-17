@@ -3,8 +3,13 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 async function request(endpoint, options = {}) {
+
+  const isPublicEndpoint =
+    endpoint === "/auth/login" ||
+    endpoint === "/auth/register";
+
   const token =
-    typeof window !== "undefined"
+    typeof window !== "undefined" && !isPublicEndpoint
       ? localStorage.getItem("accessToken")
       : null;
 
@@ -20,6 +25,7 @@ async function request(endpoint, options = {}) {
   });
 
   const contentType = response.headers.get("content-type");
+
   const data = contentType?.includes("application/json")
     ? await response.json()
     : await response.text();
